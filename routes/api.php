@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('posts', PostController::class);
+   
     Route::apiResource('employees', EmployeeController::class); // Add this line
     Route::apiResource('moderators', ModeratorController::class); // Add this line
 });

@@ -13,6 +13,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
+// ...
+
 
 class AuthController extends Controller
 {
@@ -27,12 +31,15 @@ class AuthController extends Controller
             // Validated
             $validateUser = Validator::make(
                 $request->all(),
+                
                 [
                     'name' => 'required',
                     'email' => 'required|email|unique:users,email',
-                    'password' => 'required',
-                    'type' => 'nullable|in:admin,moderator',
-                    "user_id" =>"nullable"
+                    'password' => 'required|min:8',
+                    'password_confirmation' => 'required|same:password', // Corrected field name
+                    'type' => 'nullable|in:Admin,Moderator,Employee',
+                    'user_id' => 'nullable'
+                    
                 ]
             );
 
@@ -49,7 +56,9 @@ class AuthController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'type'=>    $request->type,
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
+                'remember_token' => str::random(60),
+              
             ]);
             
             if ($request->type === 'moderator') {
