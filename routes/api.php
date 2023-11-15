@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\ModeratorController;
+use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
@@ -22,8 +23,8 @@ use Illuminate\Support\Facades\Auth;
 
 Route::middleware('auth:sanctum')->group(function () {
    
-    Route::apiResource('employees', EmployeeController::class); // Add this line
-    Route::apiResource('moderators', ModeratorController::class); // Add this line
+    Route::apiResource('profiles', ProfileController::class); 
+   
 });
 
 Route::post('/auth/login', [AuthController::class, 'loginUser']);

@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\Moderator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Models\Profile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -37,7 +37,7 @@ class AuthController extends Controller
                     'email' => 'required|email|unique:users,email',
                     'password' => 'required|min:8',
                     'password_confirmation' => 'required|same:password', // Corrected field name
-                    'type' => 'nullable|in:Admin,Moderator,Employee',
+                    'type' => 'nullable|in:admin,moderator,employee',
                     'user_id' => 'nullable'
                     
                 ]
@@ -62,14 +62,14 @@ class AuthController extends Controller
             ]);
             
             if ($request->type === 'moderator') {
-                Moderator::create([
+                Profile::create([
                     'user_id' => $user->id,
                     'name' => $request->name,
                     'email' => $request->email,
                     // Add other fields as needed
                 ]);
             } elseif ($request->type === 'employee') {
-                Employee::create([
+                Profile::create([
                     'user_id' => $user->id,
                     'name' => $request->name,
                     'email' => $request->email,

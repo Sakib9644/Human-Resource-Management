@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Employee;
-use App\Models\Moderator;
+use App\Models\Profile;
+
 
 
 class User extends Authenticatable
@@ -50,13 +50,13 @@ class User extends Authenticatable
     ];
 
 
-    public function employee()
-    {
-        return $this->hasOne(Employee::class);
-    }
+    // public function employee()
+    // {
+    //     return $this->hasOne(Employee::class);
+    // }
 
-    public function moderator()
-    {
-        return $this->hasOne(Moderator::class);
-    }
+    // public function moderator()
+    // {
+    //     return $this->hasOne(Moderator::class);
+    // }
 }
