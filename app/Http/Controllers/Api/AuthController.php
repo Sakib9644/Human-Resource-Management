@@ -118,14 +118,14 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            if (!Auth::attempt($request->only(['email', 'password']))) {
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user || !Hash::check($request->password, $user->password)) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Email & Password does not match with our record.',
+                    'message' => 'Email and password do not match our records.',
                 ], 401);
             }
-
-            $user = User::where('email', $request->email)->first();
 
             return response()->json([
                 'status' => true,
