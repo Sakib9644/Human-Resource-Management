@@ -18,4 +18,8 @@ class Profile extends Model
         'address',
         'dob',
     ];
+
+    public function profile(){
+        return $this->belongsTo(User::class);
+    }
 }

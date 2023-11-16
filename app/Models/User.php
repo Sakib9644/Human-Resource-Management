@@ -48,15 +48,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+   
+  public function user(){
+    return $this->hasone(Profile::class);
 
-
-    // public function employee()
-    // {
-    //     return $this->hasOne(Employee::class);
-    // }
-
-    // public function moderator()
-    // {
-    //     return $this->hasOne(Moderator::class);
-    // }
+  }
 }

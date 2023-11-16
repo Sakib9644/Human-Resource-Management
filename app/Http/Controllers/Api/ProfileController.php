@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
@@ -24,17 +25,19 @@ class ProfileController extends Controller
     // Update the specified profile in storage.
     public function update(Request $request, Profile $profile)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:profiles,email,' . $profile->id,
-            'image' => 'string', 
+            'image' => 'string',
             'phone' => 'required|string',
             'address' => 'required|string',
-            'mobile' => 'required|string',
             'dob' => 'required|string',
             // Add other validation rules as needed
         ]);
-
+    
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
         $profile->update([
             'name' => $request->name,
             'email' => $request->email,
@@ -47,7 +50,7 @@ class ProfileController extends Controller
 
         try {
             // your update logic
-            return response()->json(['profile' => $profile], 200);
+            return response()-> json (['message' => 'Profile updated successfully', 'profile' => $profile], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
