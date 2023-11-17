@@ -56,6 +56,46 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function store(Request $request)
+    {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|unique:roles,name',
+            'permission_ids' => 'array|required', // Ensure permission_ids is an array
+            'permission_ids.*' => 'exists:permissions,id', // Ensure each ID in the array is a valid permission ID
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+    
+        // Create a new role
+        $role = Role::create(['name' => $request->input('name'), 'guard_name' => 'web']);
+    
+        // Assign multiple permissions based on user input by ID
+        $permissionIds = $request->input('permission_ids');
+        $permissions = Permission::find($permissionIds);
+    
+        // Attach the permissions to the role
+        $role->syncPermissions($permissions);
+    
+        // Return a success message along with the created role and assigned permissions
+        return response()->json([
+            'message' => 'Role created successfully',
+            'role' => $role->name,
+            'permissions' => $permissions->pluck('name')->toArray(),
+        ], 200);
+    }
+    
+    
+    
+    /**
+     * Update the specified role in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Spatie\Permission\Models\Permission  $role
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, Role $role)
     {
         // Validate the request data
@@ -89,10 +129,13 @@ class RoleController extends Controller
         ], 200);
     }
     
-    
-    
-    
 
+    /**
+     * Remove the specified role from storage.
+     *
+     * @param  \Spatie\Permission\Models\Permission  $role
+     * @return \Illuminate\Http\Response
+     */
     public function destroy(Role $role)
     {
         // Delete the role (permission)
