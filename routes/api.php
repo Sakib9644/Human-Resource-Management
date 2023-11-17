@@ -25,12 +25,12 @@ use Illuminate\Support\Facades\Auth;
 Route::middleware('auth:sanctum')->group(function () {
    
     Route::apiResource('profiles', ProfileController::class); 
-    Route::apiResource('roles', RoleController::class); 
+  
  
   
    
 });
-
+Route::apiResource('roles', RoleController::class); 
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
 
 

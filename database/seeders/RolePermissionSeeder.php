@@ -15,7 +15,7 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $role = Role::create(['name' => 'admin']);
+       
 
         $permission = [
             ['name'=> 'user-list'],
@@ -33,9 +33,6 @@ class RolePermissionSeeder extends Seeder
             Permission::create($item);
         } 
 
-        $role->syncPermissions(Permission::all());
-        $user = User::first();
-
-        $user->assignRole($role);
+        
     }
 }

@@ -24,7 +24,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        "type",
+        "role",
         'password',
         // "remember_token",
    
@@ -50,8 +50,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
    
-  public function user(){
-    return $this->hasone(Profile::class);
+  // public function user(){
+  //   return $this->hasone(Profile::class);
 
-  }
+  // }
 }
