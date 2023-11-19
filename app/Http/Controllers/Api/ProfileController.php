@@ -19,8 +19,29 @@ class ProfileController extends Controller
     // Display the specified profile.
     public function show(Profile $profile)
     {
-        return response()->json(['profile' => $profile], 200);
+        try {
+            return response()->json([
+                'profile' => [
+                    'id' => $profile->id,
+                    'name' => $profile->name,
+                    'email' => $profile->email,
+                    'image' => $profile->image,
+                    'phone' => $profile->phone,
+                    'address' => $profile->address,
+                    'dob' => $profile->dob,
+                    // Add any other profile attributes you want to include
+                ],
+                'status' => 'success',
+                'message' => 'Profile information retrieved successfully',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ], 500);
+        }
     }
+    
 
     // Update the specified profile in storage.
     public function update(Request $request, Profile $profile)

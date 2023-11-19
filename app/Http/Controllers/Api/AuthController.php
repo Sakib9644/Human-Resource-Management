@@ -122,8 +122,7 @@ class AuthController extends Controller
                     'errors' => $validateUser->errors()
                 ], 401);
             }
-
-            $user = User::where('email', $request->email)->first();
+            $user = User::with(['roles.permissions'])->where('email', $request->email)->first();
 
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return response()->json([
@@ -131,12 +130,26 @@ class AuthController extends Controller
                     'message' => 'Email and password do not match our records.',
                 ], 401);
             }
-
+            
+            // Hide the pivot attribute before responding
+            $user->roles->each(function ($role) {
+                $role->makeHidden('pivot');
+            });
+            
             return response()->json([
                 'status' => true,
                 'message' => 'User Logged In Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'token' => $user->createToken("API TOKEN")->plainTextToken,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->roles->first()->name, // Assuming a user has only one role
+                    'permissions' => $user->roles->first()->permissions->pluck('name'),
+                ],
             ], 200);
+            
+            
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

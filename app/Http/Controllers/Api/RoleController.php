@@ -34,20 +34,28 @@ class RoleController extends Controller
      * @param  \Spatie\Permission\Models\Permission  $role
      * @return \Illuminate\Http\Response
      */
-    public function show(Role $role)
-    {
-        try {
-            // Eager load the associated permissions with the role
-            $role->load('permissions:name');
-    
-            return response()->json(['role' => $role], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage(),
-            ], 500);
-        }
+   public function show(Role $role)
+{
+    try {
+        // Eager load the associated permissions with the role
+        $role->load('permissions:name');
+
+        return response()->json([
+            'role' => [
+                'id' => $role->id,
+                'name' => $role->name,
+                // Add any other role attributes you want to include
+            ],
+            'permissions' => $role->permissions->pluck('name'),
+        ], 200);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage(),
+        ], 500);
     }
+}
+
     
 
     /**
@@ -100,8 +108,7 @@ class RoleController extends Controller
     {
         // Validate the request data
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:roles,name,' . $role->id,
-            'permission_ids' => 'array|required', // Ensure permission_ids is an array
+            'name' => 'required|unique:roles,name,' . $role->id,'permission_ids' => 'array|required', // Ensure permission_ids is an array
             'permission_ids.*' => 'exists:permissions,id', // Ensure each ID in the array is a valid permission ID
         ]);
     
