@@ -64,6 +64,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/positions/{position}', [PositionController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
     Route::delete('/positions/{position}', [PositionController::class, 'destroy'])->middleware(['checkRole:Admin']);
 
+    // Positions Routes
     Route::get('/payrolls', [PayrollController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
     Route::get('/payrolls/create', [PayrollController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);
     Route::post('/payrolls', [PayrollController::class, 'store'])->middleware(['checkRole:Admin,Moderator']);

@@ -3,29 +3,30 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Position;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\JsonResponse;
 
-class PositionController extends Controller
+class DepartmentController extends Controller
 {
     public function index()
     {
-        $positions = Position::all();
+        $departments = Department::all();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Positions retrieved successfully',
-            'positions' => $positions,
+            'message' => 'Departments retrieved successfully',
+            'data' => $departments,
         ], 200);
     }
 
     public function store(Request $request)
     {
+        // Validation logic
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255|unique:positions',
+            'name' => 'required|string|max:255|unique:departments',
             'description' => 'nullable|string',
-            'salary' => 'required|numeric',
             // Add other validation rules as needed
         ]);
 
@@ -33,26 +34,26 @@ class PositionController extends Controller
             return response()->json(['error' => $validator->errors()], 422);
         }
 
-        $position = Position::create($request->all());
+        $department = Department::create($request->all());
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Position created successfully',
-            'position' => $position,
+            'message' => 'Department created successfully',
+            'data' => $department,
         ], 201);
     }
 
-    public function show(Position $position)
+    public function show(Department $department)
     {
-        return response()->json(['position' => $position], 200);
+        return response()->json(['department' => $department], 200);
     }
 
-    public function update(Request $request, Position $position)
+    public function update(Request $request, Department $department)
     {
+        // Validation logic
         $validator = Validator::make($request->all(), [
-            'title' => 'sometimes|required|string|max:255|unique:positions,title,' . $position->id,
-            'description' => 'sometimes|nullable|string',
-            'salary' => 'sometimes|required|numeric',
+            'name' => 'required|string|max:255|unique:departments,name,' . $department->id,
+            'description' => 'nullable|string',
             // Add other validation rules as needed
         ]);
 
@@ -60,22 +61,22 @@ class PositionController extends Controller
             return response()->json(['error' => $validator->errors()], 422);
         }
 
-        $position->update($request->all());
+        $department->update($request->all());
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Position updated successfully',
-            'position' => $position,
+            'message' => 'Department updated successfully',
+            'data' => $department,
         ], 200);
     }
 
-    public function destroy(Position $position)
+    public function destroy(Department $department)
     {
-        $position->delete();
+        $department->delete();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Position deleted successfully',
+            'message' => 'Department deleted successfully',
         ], 200);
     }
 }
