@@ -1,20 +1,20 @@
-<?php
-
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
-class CheckPermissionMiddleware
+class CheckRoleAndPermission
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle(Request $request, Closure $next): Response
+    public function handle($request, Closure $next, ...$rolesAndPermissions)
     {
-        return $next($request);
+        $user = Auth::user();
+
+        foreach ($rolesAndPermissions as $roleOrPermission) {
+            if ($user->hasRole($roleOrPermission) || $user->hasPermissionTo($roleOrPermission)) {
+                return $next($request);
+            }
+        }
+
+        abort(403, 'Unauthorized action.');
     }
 }

@@ -18,14 +18,18 @@ class RolePermissionSeeder extends Seeder
        
 
         $permission = [
-            ['name'=> 'user-list'],
-            ['name'=> 'create-user'],
-            ['name'=> 'edit-user'],
-            ['name'=> 'delete-user'],
-            ['name'=> 'role-list'],
-            ['name'=> 'create-role'],
-            ['name'=> 'edit-role'],
-            ['name'=> 'delete-role'],
+            ['name' => 'user-list'],
+            ['name' => 'create-user'],
+            ['name' => 'edit-user'],
+            ['name' => 'delete-user'],
+            ['name' => 'role-list'],
+            ['name' => 'create-role'],
+            ['name' => 'edit-role'],
+            ['name' => 'delete-role'],
+            ['name' => 'profile-list'],
+            ['name' => 'create-profile'],
+            ['name' => 'edit-profile'],
+            ['name' => 'delete-profile'],
 
         ];
 
