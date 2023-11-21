@@ -135,6 +135,12 @@ class AuthController extends Controller
             $user->roles->each(function ($role) {
                 $role->makeHidden('pivot');
             });
+            // Profile::create([
+            //     'name' => $request->name,
+            //     'user_id' => $user->id,
+            //     'email' => $request->email,
+            //     // 'type' => $request->type, // Uncomment if needed
+            // ]);
             
             return response()->json([
                 'status' => true,

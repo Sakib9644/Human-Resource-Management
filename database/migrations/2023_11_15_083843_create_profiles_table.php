@@ -20,7 +20,15 @@ return new class extends Migration
             $table->string("phone")->nullable();
             $table->string("address")->nullable();
             $table->date("dob")->nullable();
+            $table->string('gender')->nullable();
+            $table->string('marital_status')->nullable();
+            $table->date('hire_date')->nullable();
+            $table->date('termination_date')->nullable();
+            $table->string('status')->nullable(); // active, inactive, on leave, etc.
+            $table->unsignedBigInteger('department_id')->nullable(); // foreign key
+            $table->unsignedBigInteger('position_id')->nullable();
             $table->timestamps();
+          
         });
     }
 

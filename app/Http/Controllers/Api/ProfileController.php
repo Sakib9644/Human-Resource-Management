@@ -17,31 +17,53 @@ class ProfileController extends Controller
     }
 
     // Display the specified profile.
-    public function show(Profile $profile)
-    {
-        try {
-            return response()->json([
-                'profile' => [
-                    'id' => $profile->id,
-                    'name' => $profile->name,
-                    'email' => $profile->email,
-                    'image' => $profile->image,
-                    'phone' => $profile->phone,
-                    'address' => $profile->address,
-                    'dob' => $profile->dob,
-                    // Add any other profile attributes you want to include
-                ],
-                'status' => 'success',
-                'message' => 'Profile information retrieved successfully',
-            ], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $th->getMessage(),
-            ], 500);
-        }
+    // Display the specified profile.
+public function show(Profile $profile)
+{
+    return response()->json(['profile' => $profile], 200);
+}
+
+
+
+public function store(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string',
+        'email' => 'required|email|unique:profiles,email',
+        'image' => 'string',
+        'phone' => 'required|string',
+        'address' => 'required|string',
+        'dob' => 'required|string',
+        // Add other validation rules as needed
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['error' => $validator->errors()], 422);
     }
+
+
+
+    try {
+        $profile = Profile::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'image' => $request->image,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'dob' => $request->dob,
+            // Add other fields as needed
+        ]);
+
     
+
+        return response()->json(['message' => 'Profile created successfully', 'profile' => $profile], 201);
+    } catch (\Exception $e) {
+     
+
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
 
     // Update the specified profile in storage.
     public function update(Request $request, Profile $profile)
