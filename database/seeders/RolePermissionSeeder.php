@@ -36,6 +36,17 @@ class RolePermissionSeeder extends Seeder
         foreach ($permission as $item){
             Permission::create($item);
         } 
+        $roles = [
+            ['name' => 'Admin'],
+            ['name' => 'Moderator'],
+            ['name' => 'Employee'],
+            
+
+        ];
+
+        foreach ($roles as $role){
+            Role::create($role);
+        } 
 
         
     }
