@@ -64,19 +64,19 @@ class LeaveRequestController extends Controller
             'reason' => 'required|string',
             // Add other validation rules as needed
         ]);
-
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
-
+    
         $leaveRequest->update($request->all());
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Leave request updated successfully',
+            'message' => 'Document updated successfully',
             'data' => $leaveRequest,
         ], 200);
     }
+    
 
     public function destroy(LeaveRequest $leaveRequest)
     {

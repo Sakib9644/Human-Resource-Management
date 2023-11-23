@@ -58,6 +58,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/departments/create', [DepartmentController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);
     Route::post('/departments', [DepartmentController::class, 'store'])->middleware(['checkRole:Admin,Moderator']);
     Route::get('/departments/{department}', [DepartmentController::class, 'show'])->middleware(['checkRole:Admin,Moderator']);
+    Route::get('/departments/{department}/edit', [DepartmentController::class, 'edit'])->middleware(['checkRole:Admin,Moderator']);
     Route::put('/departments/{department}', [DepartmentController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
     Route::delete('/departments/{department}', [DepartmentController::class, 'destroy'])->middleware(['checkRole:Admin']);
 
@@ -77,7 +78,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/payrolls/{payroll}', [PayrollController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
     Route::delete('/payrolls/{payroll}', [PayrollController::class, 'destroy'])->middleware(['checkRole:Admin']);
 
-    // Leave_Request Routes
+    // lLaverequest Routes
 
     Route::get('/leaverequests', [LeaveRequestController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
     Route::get('/leaverequests/create', [LeaveRequestController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);

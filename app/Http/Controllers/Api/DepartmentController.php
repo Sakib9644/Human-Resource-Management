@@ -20,7 +20,10 @@ class DepartmentController extends Controller
             'data' => $departments,
         ], 200);
     }
-
+    public function show(Department $department)
+    {
+        return response()->json(['department' => $department], 200);
+    }
     public function store(Request $request)
     {
         // Validation logic
@@ -43,32 +46,34 @@ class DepartmentController extends Controller
         ], 201);
     }
 
-    public function show(Department $department)
+  
+    public function edit(Department $department)
     {
         return response()->json(['department' => $department], 200);
     }
-
     public function update(Request $request, Department $department)
-    {
-        // Validation logic
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:departments,name,' . $department->id,
-            'description' => 'nullable|string',
-            // Add other validation rules as needed
-        ]);
+{
+    // Validation logic
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255|unique:departments,name,' . $department->id,
+        'description' => 'nullable|string',
+        // Add other validation rules as needed
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
-        }
-
-        $department->update($request->all());
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Department updated successfully',
-            'data' => $department,
-        ], 200);
+    if ($validator->fails()) {
+        return response()->json(['error' => $validator->errors()], 422);
     }
+
+    // Update the department with validated data
+    $department->update($request->all());
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Department updated successfully',
+        'data' => $department,
+    ], 200);
+}
+
 
     public function destroy(Department $department)
     {

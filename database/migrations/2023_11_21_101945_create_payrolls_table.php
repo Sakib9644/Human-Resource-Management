@@ -10,7 +10,7 @@ class CreatePayrollsTable extends Migration
     {
         Schema::create('payrolls', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('employee_id')->nullable();
             $table->date('pay_period_start_date');
             $table->date('pay_period_end_date');
             $table->decimal('basic_salary', 10, 2);

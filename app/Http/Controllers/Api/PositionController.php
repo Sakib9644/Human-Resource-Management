@@ -12,71 +12,63 @@ class PositionController extends Controller
     public function index()
     {
         $positions = Position::all();
-
-        return response()->json(['positions' => $positions]);
+        return response()->json(['positions' => $positions], 200);
     }
 
-    public function show($id)
+    public function show(Position $position)
     {
-        $position = Position::find($id);
-
-        if (!$position) {
-            return response()->json(['error' => 'Position not found'], 404);
-        }
-
-        return response()->json(['position' => $position]);
+        return response()->json(['position' => $position], 200);
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'description' => 'nullable',
+            'title' => 'required|string|unique:positions',
+            'description' => 'nullable|string',
             'salary' => 'required|numeric',
+            // Add other validation rules as needed
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
 
-        $position = Position::create($request->all());
-
-        return response()->json(['position' => $position], 201);
+        try {
+            $position = Position::create($request->all());
+            return response()->json(['message' => 'Position created successfully', 'position' => $position], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Position $position)
     {
-        $position = Position::find($id);
-
-        if (!$position) {
-            return response()->json(['error' => 'Position not found'], 404);
-        }
-
         $validator = Validator::make($request->all(), [
-            'title' => 'sometimes|required',
-            'description' => 'sometimes|nullable',
-            'salary' => 'sometimes|required|numeric',
+            'title' => 'required|string|',
+            'description' => 'nullable|string',
+            'salary' => 'required|numeric',
+            // Add other validation rules as needed
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
 
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
         $position->update($request->all());
 
-        return response()->json(['position' => $position]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Position updated successfully',
+            'data' =>  $position,
+        ], 200);
     }
 
-    public function destroy($id)
+    public function destroy(Position $position)
     {
-        $position = Position::find($id);
-
-        if (!$position) {
-            return response()->json(['error' => 'Position not found'], 404);
-        }
-
         $position->delete();
-
-        return response()->json(['message' => 'Position deleted']);
+        return response()->json(['message' => 'Position deleted successfully'], 200);
     }
 }
