@@ -146,13 +146,13 @@ class AuthController extends Controller
                 'status' => true,
                 'message' => 'User Logged In Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken,
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->roles->first()->name, // Assuming a user has only one role
-                    'permissions' => $user->roles->first()->permissions->pluck('name'),
-                ],
+                // 'user' => [
+                //     'id' => $user->id,
+                //     'name' => $user->name,
+                //     'email' => $user->email,
+                //     'role' => $user->roles->first()->name, // Assuming a user has only one role
+                //     'permissions' => $user->roles->first()->permissions->pluck('name'),
+                // ],
             ], 200);
             
             

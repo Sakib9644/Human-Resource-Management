@@ -17,7 +17,6 @@ class ProfileController extends Controller
     }
 
     // Display the specified profile.
-    // Display the specified profile.
 public function show(Profile $profile)
 {
     return response()->json(['profile' => $profile], 200);
@@ -75,6 +74,13 @@ public function store(Request $request)
             'phone' => 'required|string',
             'address' => 'required|string',
             'dob' => 'required|string',
+            'gender' => 'required|string',
+            'marital_status' => 'required|string',
+            'hire_date' => 'required|string',
+            'termination_date' => 'required|string',
+            'status' => 'required|string',
+            'department_id' => 'required|string',
+            'position_id' => 'required|string',
             // Add other validation rules as needed
         ]);
     
@@ -88,6 +94,13 @@ public function store(Request $request)
             'phone' => $request->phone,
             'address' => $request->address,
             'dob' => $request->dob,
+            'gender' => $request->gender,
+            'marital_status' => $request->marital_status,
+            'hire_date' => $request->hire_date,
+            'termination_date' => $request->termination_date,
+            'status' => $request->status,
+            'department_id' => $request->department_id,
+            'position_id' => $request->position_id,
             // Add other fields as needed
         ]);
 

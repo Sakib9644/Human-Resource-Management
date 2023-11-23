@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DepartmentController;
+use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\LeaveRequestController;
 use App\Http\Controllers\Api\ModeratorController;
@@ -49,7 +50,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profiles/create', [ProfileController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);
     Route::post('/profiles', [ProfileController::class, 'store'])->middleware(['checkRole:Admin,Moderator']);
     Route::get('/profiles/{profile}', [ProfileController::class, 'show'])->middleware(['checkRole:Admin,Moderator']);
-    Route::get('/profiles/{profile}/edit', [ProfileController::class, 'edit'])->middleware(['checkRole:Admin,Moderator']);
     Route::put('/profiles/{profile}', [ProfileController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
     Route::delete('/profiles/{profile}', [ProfileController::class, 'destroy'])->middleware(['checkRole:Admin']);
 
@@ -77,7 +77,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/payrolls/{payroll}', [PayrollController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
     Route::delete('/payrolls/{payroll}', [PayrollController::class, 'destroy'])->middleware(['checkRole:Admin']);
 
-    // Positions Routes
+    // Leave_Request Routes
 
     Route::get('/leaverequests', [LeaveRequestController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
     Route::get('/leaverequests/create', [LeaveRequestController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);
@@ -93,4 +93,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/attendances/{attendance}', [AttendanceController::class, 'show'])->middleware(['checkRole:Admin,Moderator']);
     Route::put('/attendances/{attendance}', [AttendanceController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
     Route::delete('/attendances/{attendance}', [AttendanceController::class, 'destroy'])->middleware(['checkRole:Admin']);
+
+    //Documents Routes
+    Route::get('/documents', [DocumentController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
+    Route::get('/documents/create', [DocumentController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);
+    Route::post('/documents', [DocumentController::class, 'store'])->middleware(['checkRole:Admin,Moderator']);
+    Route::get('/documents/{document}', [DocumentController::class, 'show'])->middleware(['checkRole:Admin,Moderator']);
+    Route::put('/documents/{document}', [DocumentController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
+    Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->middleware(['checkRole:Admin']);
 });
