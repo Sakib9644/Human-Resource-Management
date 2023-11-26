@@ -14,11 +14,7 @@ class DepartmentController extends Controller
     {
         $departments = Department::all();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Departments retrieved successfully',
-            'data' => $departments,
-        ], 200);
+        return response()->json(['departments' =>$departments], 200);
     }
     public function show(Department $department)
     {

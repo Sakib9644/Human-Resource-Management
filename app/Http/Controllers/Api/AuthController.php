@@ -63,7 +63,7 @@ class AuthController extends Controller
                 'remember_token' => str::random(60),
               
             ]);
-             Profile::create([
+             Employee::create([
                 'name' => $request->name,
                 'user_id' => $user->id,
                 'email' => $request->email,

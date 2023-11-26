@@ -50,10 +50,7 @@ class PositionController extends Controller
             // Add other validation rules as needed
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
-        }
-
+        
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }

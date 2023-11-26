@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Profile extends Model
+class Employee extends Model
 {
     use HasFactory;
-
+    protected $table = 'employees'; // Specify the actual table name
     protected $fillable = [
         'user_id',
         'name',
@@ -18,8 +18,4 @@ class Profile extends Model
         'address',
         'dob',
     ];
-
-    public function profile(){
-        return $this->belongsTo(User::class);
-    }
 }

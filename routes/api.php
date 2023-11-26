@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\EmployeeController;
+use App\Http\Controllers\Api\EmployeeDepartmentController;
+use App\Http\Controllers\Api\EmployeeDepartmentsController;
 use App\Http\Controllers\Api\LeaveRequestController;
 use App\Http\Controllers\Api\ModeratorController;
 use App\Http\Controllers\Api\PayrollController;
@@ -14,6 +16,7 @@ use App\Http\Controllers\Api\RoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Models\EmployeeDepartments;
 use Egulias\EmailValidator\Warning\DeprecatedComment;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,17 +44,20 @@ Route::post('/auth/login', [AuthController::class, 'LoginUser']); // Endpoint fo
 Route::apiResource('roles', RoleController::class);
 
 // Group for authentication middleware
-Route::middleware(['auth:sanctum'])->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('roles', RoleController::class)->middleware(['checkRole:Admin']);;
 
-    
-    // Profiles Routes
-    Route::get('/profiles', [ProfileController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
-    Route::get('/profiles/create', [ProfileController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);
-    Route::post('/profiles', [ProfileController::class, 'store'])->middleware(['checkRole:Admin,Moderator']);
-    Route::get('/profiles/{profile}', [ProfileController::class, 'show'])->middleware(['checkRole:Admin,Moderator']);
-    Route::put('/profiles/{profile}', [ProfileController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
-    Route::delete('/profiles/{profile}', [ProfileController::class, 'destroy'])->middleware(['checkRole:Admin']);
+    //Profile Controller
+
+    Route::get('/employees', [EmployeeController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
+    Route::get('/employees/create', [EmployeeController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);
+    Route::post('/employees', [EmployeeController::class, 'store'])->middleware(['checkRole:Admin,Moderator']);
+    Route::get('/employees/{employee}', [EmployeeController::class, 'show'])->middleware(['checkRole:Admin,Moderator']);
+    Route::get('/employees/{employee}/edit', [EmployeeController::class, 'edit'])->middleware(['checkRole:Admin,Moderator']);
+    Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
+    Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->middleware(['checkRole:Admin']);
+
+   
 
     // Departments Routes
     Route::get('/departments', [DepartmentController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
@@ -78,7 +84,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/payrolls/{payroll}', [PayrollController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
     Route::delete('/payrolls/{payroll}', [PayrollController::class, 'destroy'])->middleware(['checkRole:Admin']);
 
-    // lLaverequest Routes
+    // Laverequest Routes
 
     Route::get('/leaverequests', [LeaveRequestController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
     Route::get('/leaverequests/create', [LeaveRequestController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);
@@ -86,7 +92,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/leaverequests/{leaverequest}', [LeaveRequestController::class, 'show'])->middleware(['checkRole:Admin,Moderator']);
     Route::put('/leaverequests/{leaverequest}', [LeaveRequestController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
     Route::delete('/leaverequests/{leaverequest}', [LeaveRequestController::class, 'destroy'])->middleware(['checkRole:Admin']);
-    
+
     // Attendence Route
     Route::get('/attendances', [AttendanceController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
     Route::get('/attendances/create', [AttendanceController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);
@@ -102,4 +108,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/documents/{document}', [DocumentController::class, 'show'])->middleware(['checkRole:Admin,Moderator']);
     Route::put('/documents/{document}', [DocumentController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->middleware(['checkRole:Admin']);
+
+    //EmployeeDepartments
+
+    // EmployeeDepartments
+    Route::get('/employee-departments', [EmployeeDepartmentsController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
+    Route::get('/employee-departments/create', [EmployeeDepartmentsController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);
+    Route::post('/employee-departments', [EmployeeDepartmentsController::class, 'store'])->middleware(['checkRole:Admin,Moderator']);
+    Route::get('/employee-departments/{employeeDepartment}', [EmployeeDepartmentsController::class, 'show'])->middleware(['checkRole:Admin,Moderator']);
+    Route::put('/employee-departments/{employeeDepartment}', [EmployeeDepartmentsController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
+    Route::delete('/employee-departments/{employeeDepartment}', [EmployeeDepartmentsController::class, 'destroy'])->middleware(['checkRole:Admin']);
 });
