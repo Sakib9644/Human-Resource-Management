@@ -57,7 +57,7 @@ Route::apiResource('roles', RoleController::class);
     Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
     Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->middleware(['checkRole:Admin']);
 
-   
+
 
     // Departments Routes
     Route::get('/departments', [DepartmentController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
@@ -109,7 +109,7 @@ Route::apiResource('roles', RoleController::class);
     Route::put('/documents/{document}', [DocumentController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
     Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->middleware(['checkRole:Admin']);
 
-    //EmployeeDepartments
+
 
     // EmployeeDepartments
     Route::get('/employee-departments', [EmployeeDepartmentsController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);

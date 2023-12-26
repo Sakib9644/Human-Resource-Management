@@ -40,6 +40,7 @@ class EmployeeController extends Controller
 
         try {
             $employee = Employee::create($request->all());
+            
 
             return response()->json(['message' => 'Employee created successfully', 'employee' => $employee], 201);
         } catch (\Exception $e) {
@@ -50,7 +51,7 @@ class EmployeeController extends Controller
     // Update the specified profile in storage.
     public function update(Request $request, Employee $employee)
     {
-        $validator = Validator::make(request()->all(), [
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email',
             'image' => 'string',
@@ -70,16 +71,17 @@ class EmployeeController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
-
+    
         $employee->update($request->all());
+        
 
-        try {
-            // your update logic
-            return response()->json(['message' => 'Profile updated successfully', 'employee' => $employee], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Employee updated successfully',
+            'data' =>   $employee,
+        ], 200);
     }
+    
 
     public function destroy(Employee $employee)
     {

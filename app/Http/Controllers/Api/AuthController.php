@@ -32,7 +32,7 @@ class AuthController extends Controller
             // Validated
             $validateUser = Validator::make(
                 $request->all(),
-                
+
                 [
                     'name' => 'required',
                     'email' => 'required|email|unique:users,email',
@@ -42,7 +42,7 @@ class AuthController extends Controller
                     'user_id' => 'nullable',
                     'role' => 'required|exists:roles,name', // Assuming 'roles' is the name of the roles table
 
-                    
+
                 ]
             );
 
@@ -58,38 +58,37 @@ class AuthController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'role'=>    $request->role,
+                'role' => $request->role,
                 'password' => Hash::make($request->password),
-                'remember_token' => str::random(60),
-              
+                'remember_token' => Str::random(60),
             ]);
-             Employee::create([
+            
+            // Use the relationship method to create an associated employee
+            $user->employee()->create([
                 'name' => $request->name,
-                'user_id' => $user->id,
                 'email' => $request->email,
-                // 'type' => $request->type, // Uncomment if needed
+                // Other fields...
             ]);
-           // Assign the role to the user if provided
-           if ($request->filled('role')) {
-            $role = Role::where('name', $request->role)->first();
-            if ($role) {
+            
+            // Assign the role to the user if provided
+            if ($request->filled('role')) {
+                $role = Role::where('name', $request->role)->first();
+            
+                if (!$role) {
+                    return response()->json(['status' => false, 'message' => 'Role does not exist'], 422);
+                }
+            
                 $user->assignRole($role);
-            } else {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Role does not exist',
-                ], 422);
             }
-        }
+            
             // Check 'type' and create entries accordingly
-       
+
 
             return response()->json([
                 'status' => true,
                 'message' => 'User Created Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -97,7 +96,7 @@ class AuthController extends Controller
             ], 500);
         }
     }
-    
+
 
     /**
      * Login The User
@@ -130,7 +129,7 @@ class AuthController extends Controller
                     'message' => 'Email and password do not match our records.',
                 ], 401);
             }
-            
+
             // Hide the pivot attribute before responding
             $user->roles->each(function ($role) {
                 $role->makeHidden('pivot');
@@ -141,7 +140,7 @@ class AuthController extends Controller
             //     'email' => $request->email,
             //     // 'type' => $request->type, // Uncomment if needed
             // ]);
-            
+
             return response()->json([
                 'status' => true,
                 'message' => 'User Logged In Successfully',
@@ -154,8 +153,6 @@ class AuthController extends Controller
                 //     'permissions' => $user->roles->first()->permissions->pluck('name'),
                 // ],
             ], 200);
-            
-            
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
