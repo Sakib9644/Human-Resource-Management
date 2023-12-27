@@ -17,5 +17,9 @@ class Attendance extends Model
     ];
 
     // Define the relationship with Employee model
+
+    public function employee(){
+        return $this->belongsTo(Employee::class,'employee_id');
+    }
     
 }

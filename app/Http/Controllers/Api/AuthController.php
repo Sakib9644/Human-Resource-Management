@@ -62,25 +62,25 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'remember_token' => Str::random(60),
             ]);
-            
+
             // Use the relationship method to create an associated employee
             $user->employee()->create([
                 'name' => $request->name,
                 'email' => $request->email,
-                // Other fields...
+
             ]);
-            
+
             // Assign the role to the user if provided
             if ($request->filled('role')) {
                 $role = Role::where('name', $request->role)->first();
-            
+
                 if (!$role) {
                     return response()->json(['status' => false, 'message' => 'Role does not exist'], 422);
                 }
-            
+
                 $user->assignRole($role);
             }
-            
+
             // Check 'type' and create entries accordingly
 
 

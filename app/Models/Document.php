@@ -21,8 +21,10 @@ class Document extends Model
     ];
 
     // Define the relationship with the Employee model
+
+
     public function employee()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(Employee::class, 'employee_id');
     }
 }

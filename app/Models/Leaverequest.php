@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Leaverequest extends Model
 {
+    protected $table = 'leave_request';
     protected $fillable = [
         'employee_id',
         'employee_name',
@@ -18,4 +19,8 @@ class Leaverequest extends Model
         'status',
         'reason',
     ];
+
+    public function employee(){
+        return $this->belongsTo(Employee::class,'employee_id');
+    }
 }

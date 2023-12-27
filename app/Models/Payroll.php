@@ -17,4 +17,8 @@ class Payroll extends Model
     ];
 
     // Add any additional model-related functionality here
+
+    public function employee(){
+        return $this->belongsTo(Employee::class,'employee_id');
+    }
 }

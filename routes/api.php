@@ -32,12 +32,6 @@ use Illuminate\Support\Facades\Auth;
 */
 
 
-
-
-
-
-// Authentication Routes
-// Endpoint for user login
 Route::post('/auth/register', [AuthController::class, 'createUser']); // Endpoint for user registration
 Route::post('/auth/login', [AuthController::class, 'LoginUser']); // Endpoint for user registration
 
@@ -112,6 +106,14 @@ Route::apiResource('roles', RoleController::class);
 
 
     // EmployeeDepartments
+    Route::get('/employee-departments', [EmployeeDepartmentsController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
+    Route::get('/employee-departments/create', [EmployeeDepartmentsController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);
+    Route::post('/employee-departments', [EmployeeDepartmentsController::class, 'store'])->middleware(['checkRole:Admin,Moderator']);
+    Route::get('/employee-departments/{employeeDepartment}', [EmployeeDepartmentsController::class, 'show'])->middleware(['checkRole:Admin,Moderator']);
+    Route::put('/employee-departments/{employeeDepartment}', [EmployeeDepartmentsController::class, 'update'])->middleware(['checkRole:Admin,Moderator']);
+    Route::delete('/employee-departments/{employeeDepartment}', [EmployeeDepartmentsController::class, 'destroy'])->middleware(['checkRole:Admin']);
+
+    
     Route::get('/employee-departments', [EmployeeDepartmentsController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);
     Route::get('/employee-departments/create', [EmployeeDepartmentsController::class, 'create'])->middleware(['checkRole:Admin,Moderator']);
     Route::post('/employee-departments', [EmployeeDepartmentsController::class, 'store'])->middleware(['checkRole:Admin,Moderator']);

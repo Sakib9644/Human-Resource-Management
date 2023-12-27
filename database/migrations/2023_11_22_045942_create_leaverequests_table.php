@@ -10,7 +10,7 @@ class CreateLeaverequestsTable extends Migration
 {
     public function up()
     {
-        Schema::create('leaverequests', function (Blueprint $table) {
+        Schema::create('leave_requests', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('employee_id');
             $table->string('employee_name'); // Add employee name column
@@ -29,6 +29,6 @@ class CreateLeaverequestsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('leaverequests');
+        Schema::dropIfExists('leave_requests');
     }
 }

@@ -35,13 +35,42 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    /**
-     * Define a one-to-one relationship with the Profile model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
+     public function user()
+     {
+         return $this->belongsTo(User::class);
+     }
+    
     public function employee()
     {
-        return $this->hasOne(Employee::class);
+        return $this->hasMany(Employee::class);
     }
+    public function attendence()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+    public function department()
+    {
+        return $this->hasMany(Department::class);
+    }
+    public function document()
+    {
+        return $this->hasMany(Document::class);
+    }
+    public function product()
+    {
+        return $this->hasMany(Product::class);
+    }
+    public function payroll()
+    {
+        return $this->hasMany(Payroll::class);
+    }
+    public function position()
+    {
+        return $this->hasMany(Position::class);
+    }
+    public function employee_departments()
+    {
+        return $this->hasMany(EmployeeDepartments::class);
+    }
+  
 }

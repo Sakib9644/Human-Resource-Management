@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class EmployeeDepartments extends Model
 {
     use HasFactory;
-    protected $table = 'employeedepartments'; // Specify the actual table name
+    protected $table = 'employee_departments'; // Specify the actual table name
 
     protected $fillable = ['employee_id', 'department_id', 'description'];
 
