@@ -11,7 +11,6 @@ use Illuminate\Http\JsonResponse;
 
 class AttendanceController extends Controller
 {
-
     protected $attendanceobject;
 
     public function __construct(AttendanceRepository $attendanceRepository)
@@ -47,8 +46,17 @@ class AttendanceController extends Controller
         ], JsonResponse::HTTP_CREATED);
     }
 
-    public function show(Attendance $attendance)
+    public function show($id)
     {
+        $attendance = $this->attendanceobject->find($id);
+
+        if (!$attendance) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Attendance not found',
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+
         return response()->json([
             'status' => 'success',
             'message' => 'Attendance retrieved successfully',
@@ -56,7 +64,21 @@ class AttendanceController extends Controller
         ], JsonResponse::HTTP_OK);
     }
 
-    public function update(Request $request, Attendance $attendance)
+    public function edit($id)
+    {
+        $attendance = $this->attendanceobject->find($id);
+
+        if (!$attendance) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Department not found',
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return response()->json(['department' => $attendance], JsonResponse::HTTP_OK);
+    }
+
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), $this->getValidationRules());
 
@@ -64,18 +86,36 @@ class AttendanceController extends Controller
             return response()->json(['error' => $validator->errors()], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $this->attendanceobject->update($attendance, $request->all());
+        $attendance = $this->attendanceobject->find($id);
+
+        if (!$attendance) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Attendance not found',
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $updatedAttendance = $this->attendanceobject->update($id, $request->all());
 
         return response()->json([
             'status' => 'success',
             'message' => 'Attendance updated successfully',
-            'data' => $attendance,
+            'data' => $updatedAttendance,
         ], JsonResponse::HTTP_OK);
     }
 
-    public function destroy(Attendance $attendance)
+    public function destroy($id)
     {
-        $this->attendanceobject->delete($attendance);
+        $attendance = $this->attendanceobject->find($id);
+
+        if (!$attendance) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Attendance not found',
+            ], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $this->attendanceobject->delete($id);
 
         return response()->json([
             'status' => 'success',
@@ -88,10 +128,9 @@ class AttendanceController extends Controller
         return [
             'employee_id' => 'required|exists:employees,id',
             'attendance_date' => 'required|date',
-            'clock_in_time' => 'nullable|date_format:H:i:s',
-            'clock_out_time' => 'nullable|date_format:H:i:s',
-            'status' => 'required|in:present,absent,late,early_leave,holiday,half_day',
-            // Add other validation rules as needed
+            'clock_in_time' => 'nullable|date_format:h:iA', // Exclude seconds
+            'clock_out_time' => 'nullable|date_format:h:iA', // Exclude seconds
+            'status' => 'required',
         ];
     }
 }

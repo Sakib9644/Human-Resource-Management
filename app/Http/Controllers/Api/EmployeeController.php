@@ -3,28 +3,43 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Employee;
+use App\Repositories\ModelRepositories\EmployeeRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\JsonResponse;
 
 class EmployeeController extends Controller
 {
-    // Display a listing of the profiles.
+    protected $employeeObject;
+
+    public function __construct(EmployeeRepository $employeeRepository)
+    {
+        $this->employeeObject = $employeeRepository;
+    }
+
     public function index()
     {
-        $employees = Employee::all();
+        $employees = $this->employeeObject->all();
         return response()->json(['employees' => $employees], 200);
     }
 
-    // Display the specified profile.
-    public function show(Employee $employee)
+    public function show($id)
     {
+        $employee = $this->employeeObject->find($id);
+
+        if (!$employee) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Employee not found',
+            ], 404);
+        }
+
         return response()->json(['employee' => $employee], 200);
     }
 
     public function store(Request $request)
     {
-        $validator = Validator::make(request()->all(), [
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email',
             'image' => 'string',
@@ -39,17 +54,33 @@ class EmployeeController extends Controller
         }
 
         try {
-            $employee = Employee::create($request->all());
-            
+            $employee = $this->employeeObject->create($request->all());
 
-            return response()->json(['message' => 'Employee created successfully', 'employee' => $employee], 201);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Employee created successfully',
+                'data' => $employee,
+            ], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
-    // Update the specified profile in storage.
-    public function update(Request $request, Employee $employee)
+    public function edit($id)
+    {
+        $employee = $this->employeeObject->find($id);
+
+        if (!$employee) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Employee not found',
+            ], 404);
+        }
+
+        return response()->json(['employee' => $employee], 200);
+    }
+
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
@@ -58,35 +89,56 @@ class EmployeeController extends Controller
             'phone' => 'required|string',
             'address' => 'required|string',
             'dob' => 'required|string',
-            'gender' => 'required|string',
-            'marital_status' => 'required|string',
-            'hire_date' => 'required|string',
-            'termination_date' => 'required|string',
-            'status' => 'required|string',
-            'department_id' => 'required|string',
-            'position_id' => 'required|string',
+            'role' => 'required|in:Employee,Admin,Moderator', // Add this line to validate the 'role' field
             // Add other validation rules as needed
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
     
-        $employee->update($request->all());
-        
-
+        $employee = $this->employeeObject->find($id);
+    
+        if (!$employee) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Employee not found',
+            ], 404);
+        }
+    
+        // Update 'role' in the employee table
+        $employee = $this->employeeObject->update($id, $request->all());
+    
+        // Assuming there's a relationship between Employee and User
+        $user = $employee->user;
+        if ($user) {
+            // Update 'role' in the user table
+            $user->update(['role' => $request->input('role')]);
+        }
+    
         return response()->json([
             'status' => 'success',
             'message' => 'Employee updated successfully',
-            'data' =>   $employee,
+            'data' => $employee,
         ], 200);
     }
     
-
-    public function destroy(Employee $employee)
+    public function destroy($id)
     {
-        $employee->delete();
+        $employee = $this->employeeObject->find($id);
 
-        return response()->json(['message' => 'Employee deleted successfully'], 200);
+        if (!$employee) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Employee not found',
+            ], 404);
+        }
+
+        $this->employeeObject->delete($id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Employee deleted successfully',
+        ], 200);
     }
 }

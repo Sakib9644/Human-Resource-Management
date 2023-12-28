@@ -1,18 +1,26 @@
 <?php
+// app/Http/Controllers/Api/LeaveRequestController.php
 
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\LeaveRequest;
+use App\Repositories\ModelRepositories\LeaveRequestRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 
 class LeaveRequestController extends Controller
 {
+    protected $leaveRequestObject;
+
+    public function __construct(LeaveRequestRepository $leaveRequestRepository)
+    {
+        $this->leaveRequestObject = $leaveRequestRepository;
+    }
+
     public function index()
     {
-        $leaveRequests = LeaveRequest::all();
+        $leaveRequests = $this->leaveRequestObject->all();
 
         return response()->json([
             'status' => 'success',
@@ -38,7 +46,7 @@ class LeaveRequestController extends Controller
             return response()->json(['error' => $validator->errors()], 422);
         }
 
-        $leaveRequest = LeaveRequest::create($request->all());
+        $leaveRequest = $this->leaveRequestObject->create($request->all());
 
         return response()->json([
             'status' => 'success',
@@ -47,12 +55,21 @@ class LeaveRequestController extends Controller
         ], 201);
     }
 
-    public function show(LeaveRequest $leaveRequest)
+    public function show($id)
     {
+        $leaveRequest = $this->leaveRequestObject->find($id);
+
         return response()->json(['leaverequest' => $leaveRequest], 200);
     }
 
-    public function update(Request $request, LeaveRequest $leaveRequest)
+    public function edit($id)
+    {
+        $leaveRequest = $this->leaveRequestObject->find($id);
+
+        return response()->json(['leaverequest' => $leaveRequest], 200);
+    }
+
+    public function update(Request $request, $id)
     {
         // Validation logic
         $validator = Validator::make($request->all(), [
@@ -64,23 +81,23 @@ class LeaveRequestController extends Controller
             'reason' => 'required|string',
             // Add other validation rules as needed
         ]);
+
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
-    
-        $leaveRequest->update($request->all());
+
+        $leaveRequest = $this->leaveRequestObject->update($id, $request->all());
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Document updated successfully',
+            'message' => 'Leave request updated successfully',
             'data' => $leaveRequest,
         ], 200);
     }
-    
 
-    public function destroy(LeaveRequest $leaveRequest)
+    public function destroy($id)
     {
-        $leaveRequest->delete();
+        $this->leaveRequestObject->delete($id);
 
         return response()->json([
             'status' => 'success',

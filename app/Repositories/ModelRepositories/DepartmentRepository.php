@@ -11,7 +11,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Repositories\BaseRepository;
 
-class DepartmentsRepository extends BaseRepository
+class DepartmentRepository extends BaseRepository
 {
     public function __construct(Department $department)
     {

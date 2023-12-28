@@ -1,23 +1,34 @@
 <?php
 
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Payroll;
+use App\Repositories\ModelRepositories\PayrollRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\JsonResponse;
 
 class PayrollController extends Controller
 {
+    protected $payrollObject;
+
+    public function __construct(PayrollRepository $payrollRepository)
+    {
+        $this->payrollObject = $payrollRepository;
+    }
+
     public function index()
     {
-        $payrolls = Payroll::all();
+        $payrolls = $this->payrollObject->all();
 
         return response()->json(['payrolls' => $payrolls]);
     }
 
-    public function show(Payroll $payroll)
+    public function show($id)
     {
+        $payroll = $this->payrollObject->find($id);
+
         return response()->json(['payroll' => $payroll]);
     }
 
@@ -37,12 +48,20 @@ class PayrollController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
-        $payroll = Payroll::create($request->all());
+
+        $payroll = $this->payrollObject->create($request->all());
 
         return response()->json(['payroll' => $payroll], 201);
     }
 
-    public function update(Request $request, Payroll $payroll)
+    public function edit($id)
+    {
+        $payroll = $this->payrollObject->find($id);
+
+        return response()->json(['payroll' => $payroll], 200);
+    }
+
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'employee_id' => 'required|exists:employees,id',
@@ -58,20 +77,19 @@ class PayrollController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
-        $payroll->update($request->all());
+
+        $payroll = $this->payrollObject->update($id, $request->all());
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Department updated successfully',
+            'message' => 'Payroll updated successfully',
             'data' => $payroll,
         ], 200);
     }
 
-    
-
-    public function destroy(Payroll $payroll)
+    public function destroy($id)
     {
-        $payroll->delete();
+        $this->payrollObject->delete($id);
 
         return response()->json(['message' => 'Payroll deleted']);
     }

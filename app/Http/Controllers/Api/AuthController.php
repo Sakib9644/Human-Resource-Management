@@ -40,7 +40,7 @@ class AuthController extends Controller
                     'password_confirmation' => 'required|same:password', // Corrected field name
                     'type' => 'nullable|in:admin,moderator,employee',
                     'user_id' => 'nullable',
-                    'role' => 'required|exists:roles,name', // Assuming 'roles' is the name of the roles table
+                    // 'role' => 'required|exists:roles,name', // Assuming 'roles' is the name of the roles table
 
 
                 ]
@@ -58,7 +58,7 @@ class AuthController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'role' => $request->role,
+               
                 'password' => Hash::make($request->password),
                 'remember_token' => Str::random(60),
             ]);

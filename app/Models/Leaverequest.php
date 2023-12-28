@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Leaverequest extends Model
 {
-    protected $table = 'leave_request';
+    protected $table = 'leave_requests';
     protected $fillable = [
         'employee_id',
         'employee_name',

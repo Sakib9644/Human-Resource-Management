@@ -4,15 +4,23 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Document;
+use App\Repositories\ModelRepositories\DocumentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 
 class DocumentController extends Controller
 {
+    protected $documentObject;
+
+    public function __construct(DocumentRepository $documentRepository)
+    {
+        $this->documentObject = $documentRepository;
+    }
+
     public function index()
     {
-        $documents = Document::all();
+        $documents = $this->documentObject->all();
 
         return response()->json([
             'status' => 'success',
@@ -25,7 +33,7 @@ class DocumentController extends Controller
     {
         // Validation logic
         $validator = Validator::make($request->all(), [
-            'employee_id' => 'required|',
+            'employee_id' => 'required',
             'document_name' => 'required|string|max:255',
             'file_path' => 'required|string',
             'upload_date' => 'required|date',
@@ -37,7 +45,7 @@ class DocumentController extends Controller
             return response()->json(['error' => $validator->errors()], 422);
         }
 
-        $document = Document::create($request->all());
+        $document = $this->documentObject->create($request->all());
 
         return response()->json([
             'status' => 'success',
@@ -46,12 +54,35 @@ class DocumentController extends Controller
         ], 201);
     }
 
-    public function show(Document $document )
+    public function show($id)
     {
+        $document = $this->documentObject->find($id);
+
+        if (!$document) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Document not found',
+            ], 404);
+        }
+
         return response()->json(['document' => $document], 200);
     }
 
-    public function update(Request $request, Document $document)
+    public function edit($id)
+    {
+        $document = $this->documentObject->find($id);
+
+        if (!$document) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Document not found',
+            ], 404);
+        }
+
+        return response()->json(['document' => $document], 200);
+    }
+
+    public function update(Request $request, $id)
     {
         // Validation logic
         $validator = Validator::make($request->all(), [
@@ -60,25 +91,42 @@ class DocumentController extends Controller
             'file_path' => 'string',
             'upload_date' => 'date',
             'description' => 'nullable|string',
-            // Add other validation rules as needed
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
-    
-        $document->update($request->all());
+
+        $document = $this->documentObject->find($id);
+
+        if (!$document) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Document not found',
+            ], 404);
+        }
+
+        $document = $this->documentObject->update($id, $request->all());
 
         return response()->json([
             'status' => 'success',
             'message' => 'Document updated successfully',
-            'data' =>  $document,
+            'data' => $document,
         ], 200);
     }
-    
-    public function destroy(Document $document)
+
+    public function destroy($id)
     {
-        $document->delete();
+        $document = $this->documentObject->find($id);
+
+        if (!$document) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Document not found',
+            ], 404);
+        }
+
+        $this->documentObject->delete($id);
 
         return response()->json([
             'status' => 'success',

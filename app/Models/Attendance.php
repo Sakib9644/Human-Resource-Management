@@ -4,6 +4,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Attendance extends Model
@@ -21,5 +22,16 @@ class Attendance extends Model
     public function employee(){
         return $this->belongsTo(Employee::class,'employee_id');
     }
+
+    public function setClockInTimeAttribute($value)
+    {
+        $this->attributes['clock_in_time'] = Carbon::createFromFormat('h:iA', $value)->format('H:i');
+    }
+    
+    public function setClockOutTimeAttribute($value)
+    {
+        $this->attributes['clock_out_time'] = $value ? Carbon::createFromFormat('h:iA', $value)->format('H:i') : null;
+    }
+    
     
 }
