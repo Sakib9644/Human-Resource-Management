@@ -33,12 +33,12 @@ use Illuminate\Support\Facades\Auth;
 
 Route::post('/auth/register', [AuthController::class, 'createUser']); // Endpoint for user registration
  // Endpoint for user registration
+ Route::post('/auth/login', [AuthController::class, 'LoginUser']);
 
 Route::apiResource('roles', RoleController::class);
 
 // Group for authentication middleware
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/auth/login', [AuthController::class, 'LoginUser']);
 
     //Profile Controller
     Route::get('/employees', [EmployeeController::class, 'index'])->middleware(['checkRole:Admin,Moderator']);

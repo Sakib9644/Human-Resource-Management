@@ -89,40 +89,31 @@ class EmployeeController extends Controller
             'phone' => 'required|string',
             'address' => 'required|string',
             'dob' => 'required|string',
-            'role' => 'required|in:Employee,Admin,Moderator', // Add this line to validate the 'role' field
             // Add other validation rules as needed
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
-    
+
         $employee = $this->employeeObject->find($id);
-    
+
         if (!$employee) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Employee not found',
             ], 404);
         }
-    
-        // Update 'role' in the employee table
+
         $employee = $this->employeeObject->update($id, $request->all());
-    
-        // Assuming there's a relationship between Employee and User
-        $user = $employee->user;
-        if ($user) {
-            // Update 'role' in the user table
-            $user->update(['role' => $request->input('role')]);
-        }
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'Employee updated successfully',
             'data' => $employee,
         ], 200);
     }
-    
+
     public function destroy($id)
     {
         $employee = $this->employeeObject->find($id);
